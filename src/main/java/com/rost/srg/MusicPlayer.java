@@ -3,6 +3,7 @@ package com.rost.srg;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -12,15 +13,17 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
-@Getter
-@Setter
+//@Getter
+//@Setter
 @Component
 @NoArgsConstructor
 public class MusicPlayer {
@@ -29,16 +32,22 @@ public class MusicPlayer {
     @Value("${musicPlayer.volume}")
     private int volume;
 
-    private Music classicalMusic;
-    private Music rapMusic;
+    private Music firstMusic;
+    private Music secondMusic;
+
+    private Music thirdMusic;
 
     @Autowired
-    public MusicPlayer(ClassicalMusic classicalMusic, RapMusic rapMusic) {
-        this.classicalMusic = classicalMusic;
-        this.rapMusic = rapMusic;
+    public MusicPlayer(@Qualifier("rockMusicBean") Music firstMusic,
+                       @Qualifier("classicalMusicBean") Music secondMusic,
+                       @Qualifier("rapMusicBean") Music thirdMusic)
+    {
+        this.firstMusic = firstMusic;
+        this.secondMusic = secondMusic;
+        this.thirdMusic = thirdMusic;
     }
 
-    private List<Music> musicList;
+    private List<Music> musicBeansList;
 
     @PostConstruct
     public void initMethod() {
@@ -59,7 +68,7 @@ public class MusicPlayer {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        musicList = Collections.unmodifiableList(musicBeans);
+        musicBeansList = Collections.unmodifiableList(musicBeans);
     }
 
     @PreDestroy
@@ -68,9 +77,16 @@ public class MusicPlayer {
     }
 
     public String playMusic() {
-        return musicList.stream()
+        return musicBeansList.stream()
                 .map(Music::getSong)
                 .collect(Collectors.joining("\nPlaying: ", "Playing: ", ""));
+    }
+
+    public String playMusic(MusicGenre musicGenre) {
+        return musicBeansList.stream()
+                .filter(musicBean -> musicBean.getClass().getName().contains(musicGenre.getName()))
+                .map(Music::getSong)
+                .findFirst().orElseThrow(RuntimeException::new);
     }
 
     private void playSong(String song) {
@@ -79,5 +95,20 @@ public class MusicPlayer {
 
     public void printInfo() {
         System.out.printf("name: %s, volume = %d [dB]\n", name, volume);
+    }
+
+    @AllArgsConstructor
+    @Getter
+    enum MusicGenre {
+        RAP("Rap"),
+        ROCK("Rock"),
+        CLASSICAL("Classical");
+
+        private String name;
+
+    }
+
+    public static void main(String[] args) {
+
     }
 }

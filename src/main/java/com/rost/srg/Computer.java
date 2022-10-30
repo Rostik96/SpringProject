@@ -1,5 +1,7 @@
 package com.rost.srg;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +17,6 @@ public class Computer {
 
     @Override
     public String toString() {
-        return musicPlayer.playMusic();
+        return musicPlayer.playMusic(MusicPlayer.MusicGenre.values()[new Random().nextInt(MusicPlayer.MusicGenre.values().length)]);
     }
 }

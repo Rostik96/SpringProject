@@ -1,25 +1,32 @@
 package com.rost.srg;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.ImmutableList;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Component("classicalMusicBean")
+@NoArgsConstructor
+@Getter
 public class ClassicalMusic implements Music {
-    ClassicalMusic() {}
+    private static final List<String> classicalSongs = ImmutableList.<String>builder()
+            .add("Hungarian Rhapsody")
+            .add("Moonlight Sonata")
+            .add("Year Seasons")
+            .build();
+
+    @Override
+    public List<String> getSongs() {
+        return classicalSongs;
+    }
 
     @Override
     public String getSong() {
-        return "Hungarian Rhapsody";
-    }
-
-    public void doMyInit() {
-        System.out.println("Doing my initialization...");
-    }
-
-    public void doMyDestroy() {
-        System.out.println("Doing my destruction...");
-    }
-
-    public static ClassicalMusic ClassicalMusic() {
-        return new ClassicalMusic();
+        return classicalSongs.get(new Random().nextInt(classicalSongs.size()));
     }
 }
