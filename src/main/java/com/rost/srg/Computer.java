@@ -2,9 +2,9 @@ package com.rost.srg;
 
 import java.util.Random;
 
-import org.springframework.stereotype.Component;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-@Component
 public class Computer {
     private static int ID;
     private int id;
@@ -13,6 +13,16 @@ public class Computer {
     public Computer(MusicPlayer musicPlayer) {
         this.id = ++ID;
         this.musicPlayer = musicPlayer;
+    }
+
+    @PostConstruct
+    public void doMyInit() {
+        System.out.println("doMyInit() inda Computer.java");
+    }
+
+    @PreDestroy
+    public void doMyDestroy() {
+        System.out.println("doMyDestroy() inda Computer.java");
     }
 
     @Override

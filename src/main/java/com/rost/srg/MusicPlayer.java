@@ -3,28 +3,24 @@ package com.rost.srg;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-//@Getter
-//@Setter
-@Component
+@Getter
+@Setter
 @NoArgsConstructor
 public class MusicPlayer {
     @Value("${musicPlayer.name}")
@@ -37,11 +33,7 @@ public class MusicPlayer {
 
     private Music thirdMusic;
 
-    @Autowired
-    public MusicPlayer(@Qualifier("rockMusicBean") Music firstMusic,
-                       @Qualifier("classicalMusicBean") Music secondMusic,
-                       @Qualifier("rapMusicBean") Music thirdMusic)
-    {
+    public MusicPlayer(Music firstMusic, Music secondMusic, Music thirdMusic) {
         this.firstMusic = firstMusic;
         this.secondMusic = secondMusic;
         this.thirdMusic = thirdMusic;
@@ -89,6 +81,11 @@ public class MusicPlayer {
                 .findFirst().orElseThrow(RuntimeException::new);
     }
 
+    @Override
+    public String toString() {
+        return playMusic(MusicGenre.values()[new Random().nextInt(MusicGenre.values().length)]);
+    }
+
     private void playSong(String song) {
         System.out.printf("Playing: %s\n", song);
     }
@@ -105,10 +102,6 @@ public class MusicPlayer {
         CLASSICAL("Classical");
 
         private String name;
-
-    }
-
-    public static void main(String[] args) {
 
     }
 }

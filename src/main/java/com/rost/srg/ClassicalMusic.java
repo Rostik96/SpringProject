@@ -1,16 +1,12 @@
 package com.rost.srg;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import org.springframework.stereotype.Component;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Component("classicalMusicBean")
 @NoArgsConstructor
 @Getter
 public class ClassicalMusic implements Music {

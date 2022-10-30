@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Component("rockMusicBean")
 @NoArgsConstructor
 @Getter
 public class RockMusic implements Music {
